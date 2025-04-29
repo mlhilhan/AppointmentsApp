@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Yönetici Paneli";
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Kullanıcı Yönetimi</h5>
+                    <p class="card-text">Sistemdeki tüm kullanıcıları görüntüleyin ve yönetin.</p>
+                    <a asp-action="Users" class="btn btn-primary">Kullanıcılar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Randevu Yönetimi</h5>
+                    <p class="card-text">Sistemdeki tüm randevuları görüntüleyin.</p>
+                    <a asp-action="AllAppointments" class="btn btn-primary">Tüm Randevular</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

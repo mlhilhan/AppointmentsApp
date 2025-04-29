@@ -1,0 +1,75 @@
+﻿@model IEnumerable<RandevuSistemi.Core.Entities.Appointment>
+
+@{
+    ViewData["Title"] = "Tüm Randevular";
+    var today = DateTime.Today;
+    var now = DateTime.Now.TimeOfDay;
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-body">
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info">
+                    Sistemde henüz randevu bulunmamaktadır.
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Kullanıcı</th>
+                                <th>Başlık</th>
+                                <th>Tarih</th>
+                                <th>Saat</th>
+                                <th>Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var appointment in Model)
+                            {
+                                bool isPastAppointment = appointment.AppointmentDate.Date < today ||
+                                (appointment.AppointmentDate.Date == today && appointment.AppointmentTime < now);
+                                bool isDeleted = appointment.IsDeleted;
+
+                                <tr class="@(isDeleted ? "table-danger" : isPastAppointment ? "table-secondary" : "")">
+                                    <td>@appointment.User?.FullName</td>
+                                    <td>@appointment.Title</td>
+                                    <td>@appointment.AppointmentDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@appointment.AppointmentTime.ToString(@"hh\:mm")</td>
+                                    <td>
+                                        @if (isDeleted)
+                                        {
+                                            <span class="badge bg-danger">İptal Edilmiş</span>
+                                        }
+                                        else if (isPastAppointment)
+                                        {
+                                            <span class="badge bg-secondary">Geçmiş Randevu</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Aktif Randevu</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+</div>

@@ -16,5 +16,6 @@ namespace RandevuSistemi.Core.Services
         Task<Appointment> CreateAppointmentAsync(Appointment appointment);
         Task UpdateAppointmentAsync(Appointment appointment);
         Task DeleteAppointmentAsync(int id);
+        Task<IEnumerable<Appointment>> GetAllAppointmentsAsync();
     }
 }

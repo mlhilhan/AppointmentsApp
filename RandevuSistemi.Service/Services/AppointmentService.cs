@@ -63,5 +63,10 @@ namespace RandevuSistemi.Service.Services
                 await _appointmentRepository.UpdateAsync(appointment);
             }
         }
+
+        public async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync()
+        {
+            return await _appointmentRepository.GetAllWithIncludeAsync(a => a.User);
+        }
     }
 }

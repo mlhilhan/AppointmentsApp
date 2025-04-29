@@ -53,5 +53,17 @@ namespace RandevuSistemi.Data.Repositories
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<T>> GetAllWithIncludeAsync(params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }
