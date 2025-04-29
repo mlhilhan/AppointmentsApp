@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4">Randevu Yönetim Sistemi</h1>
+    <p class="lead mt-4">Randevularınızı kolayca yönetebileceğiniz uygulamamıza hoş geldiniz!</p>
+
+    <div class="mt-5">
+        @if (Context.Session.GetInt32("UserId") != null)
+        {
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Randevularım</h5>
+                            <p class="card-text">Mevcut randevularınızı görüntüleyin ve yönetin.</p>
+                            <a asp-controller="Appointment" asp-action="Index" class="btn btn-primary">Randevularıma Git</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Yeni Randevu</h5>
+                            <p class="card-text">Yeni bir randevu oluşturun.</p>
+                            <a asp-controller="Appointment" asp-action="Create" class="btn btn-success">Randevu Oluştur</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Giriş Yap</h5>
+                            <p class="card-text">Hesabınıza giriş yapın ve randevularınızı yönetin.</p>
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Giriş Yap</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Kayıt Ol</h5>
+                            <p class="card-text">Henüz bir hesabınız yok mu? Hemen kayıt olun.</p>
+                            <a asp-controller="Account" asp-action="Register" class="btn btn-success">Kayıt Ol</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
