@@ -58,6 +58,13 @@ namespace RandevuSistemi.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            if (model.AppointmentDate.Date < DateTime.Today ||
+                (model.AppointmentDate.Date == DateTime.Today && model.AppointmentTime < DateTime.Now.TimeOfDay))
+            {
+                ModelState.AddModelError("AppointmentDate", "Geçmiş tarih veya saate randevu oluşturulamaz.");
+                return View(model);
+            }
+
             if (ModelState.IsValid)
             {
                 var appointment = new Appointment
@@ -109,6 +116,13 @@ namespace RandevuSistemi.Controllers
             if (userId == null)
             {
                 return RedirectToAction("Login", "Account");
+            }
+
+            if (model.AppointmentDate.Date < DateTime.Today ||
+                (model.AppointmentDate.Date == DateTime.Today && model.AppointmentTime < DateTime.Now.TimeOfDay))
+            {
+                ModelState.AddModelError("AppointmentDate", "Geçmiş tarih veya saate randevu düzenlenemez.");
+                return View(model);
             }
 
             if (ModelState.IsValid)

@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Randevularım";
+    var today = DateTime.Today;
+    var now = DateTime.Now.TimeOfDay;
 }
 
 <div class="container">
@@ -39,13 +41,24 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr>
+                        bool isPastAppointment = item.AppointmentDate.Date < today ||
+                        (item.AppointmentDate.Date == today && item.AppointmentTime < now);
+
+                        <tr class="@(isPastAppointment ? "table-secondary" : "")">
                             <td>@Html.DisplayFor(modelItem => item.Title)</td>
                             <td>@item.AppointmentDate.ToString("dd/MM/yyyy")</td>
                             <td>@item.AppointmentTime.ToString(@"hh\:mm")</td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Düzenle</a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                                @if (isPastAppointment)
+                                {
+                                    <span class="badge bg-secondary me-2">Geçmiş Randevu</span>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                                }
+                                else
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Düzenle</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Sil</a>
+                                }
                             </td>
                         </tr>
                     }
