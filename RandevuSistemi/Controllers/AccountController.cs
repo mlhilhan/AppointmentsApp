@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RandevuSistemi.Core.Entities;
 using RandevuSistemi.Core.Services;
 using RandevuSistemi.Models;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RandevuSistemi.Controllers
@@ -30,10 +33,33 @@ namespace RandevuSistemi.Controllers
                 if (isValid)
                 {
                     var user = await _userService.GetUserByUsernameAsync(model.Username);
-                    HttpContext.Session.SetInt32("UserId", user.Id);
-                    HttpContext.Session.SetString("Username", user.UserName);
-                    HttpContext.Session.SetString("FullName", user.FullName);
-                    HttpContext.Session.SetInt32("IsAdmin", user.IsAdmin ? 1 : 0);
+
+                    // Kimlik bilgilerini oluşturma
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                        new Claim("FullName", user.FullName)
+                    };
+
+                    if (user.IsAdmin)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    }
+
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = true, // "Beni hatırla" işlevi
+                        ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity),
+                        authProperties);
+
+                    TempData["SuccessMessage"] = "Başarıyla giriş yaptınız!";
 
                     return RedirectToAction("Index", "Appointment");
                 }
@@ -75,9 +101,10 @@ namespace RandevuSistemi.Controllers
             return View(model);
         }
 
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            //TempData["SuccessMessage"] = "Başarıyla çıkış yaptınız.";
             return RedirectToAction("Index", "Home");
         }
     }

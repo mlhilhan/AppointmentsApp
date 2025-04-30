@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RandevuSistemi.Core.Entities;
 using RandevuSistemi.Core.Services;
@@ -6,10 +6,12 @@ using RandevuSistemi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RandevuSistemi.Controllers
 {
+    [Authorize]
     public class AppointmentController : Controller
     {
         private readonly IAppointmentService _appointmentService;
@@ -21,22 +23,33 @@ namespace RandevuSistemi.Controllers
             _userService = userService;
         }
 
+        // Kullanıcı ID'sini claim'den alan helper metodu
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int userId))
+            {
+                return -1;
+            }
+            return userId;
+        }
+
         public async Task<IActionResult> Index()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            var appointments = await _appointmentService.GetUserAppointmentsAsync(userId.Value);
+            var appointments = await _appointmentService.GetUserAppointmentsAsync(userId);
             return View(appointments);
         }
 
         public IActionResult Create()
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -52,8 +65,8 @@ namespace RandevuSistemi.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(AppointmentViewModel model)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -69,7 +82,7 @@ namespace RandevuSistemi.Controllers
             {
                 var appointment = new Appointment
                 {
-                    UserId = userId.Value,
+                    UserId = userId,
                     Title = model.Title,
                     Description = model.Description,
                     AppointmentDate = model.AppointmentDate,
@@ -86,8 +99,8 @@ namespace RandevuSistemi.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -112,8 +125,8 @@ namespace RandevuSistemi.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(AppointmentViewModel model)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -147,8 +160,8 @@ namespace RandevuSistemi.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -165,8 +178,8 @@ namespace RandevuSistemi.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            int? userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            int userId = GetCurrentUserId();
+            if (userId == -1)
             {
                 return RedirectToAction("Login", "Account");
             }
