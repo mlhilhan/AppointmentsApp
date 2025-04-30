@@ -37,9 +37,9 @@ namespace RandevuSistemi.Data.Context
                 new User
                 {
                     Id = 2,
-                    UserName = "user1",
+                    UserName = "user",
                     Password = "user123",
-                    Email = "user1@example.com",
+                    Email = "user@example.com",
                     FullName = "Test User",
                     IsAdmin = false
                 }

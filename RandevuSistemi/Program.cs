@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RandevuSistemi.Core.Repositories;
+using RandevuSistemi.Core.Security;
 using RandevuSistemi.Core.Services;
 using RandevuSistemi.Data.Context;
 using RandevuSistemi.Data.Repositories;
+using RandevuSistemi.Service.Security;
 using RandevuSistemi.Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 // Cookie Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

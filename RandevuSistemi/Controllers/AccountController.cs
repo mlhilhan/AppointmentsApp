@@ -88,7 +88,7 @@ namespace RandevuSistemi.Controllers
                 var user = new User
                 {
                     UserName = model.Username,
-                    Password = model.Password,
+                    Password = model.Password, // Geçiş için tutulacak
                     Email = model.Email,
                     FullName = model.FullName,
                     IsAdmin = false
