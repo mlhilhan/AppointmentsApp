@@ -40,7 +40,7 @@ namespace RandevuSistemi.Data.Context
                     UserName = "user",
                     Password = "user123",
                     Email = "user@example.com",
-                    FullName = "Test User",
+                    FullName = "System User",
                     IsAdmin = false
                 }
             );
