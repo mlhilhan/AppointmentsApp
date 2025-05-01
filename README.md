@@ -2,7 +2,7 @@
 
 Bu proje, kullanıcıların randevu oluşturup yönetebileceği ve yöneticilerin tüm randevuları görebileceği bir web uygulamasıdır. Kullanıcılar kendi randevularını oluşturabilir, düzenleyebilir ve silebilirken, yöneticiler tüm randevuları görüntüleyebilir ve yönetebilir.
 
-![Randevu Sistemi](/screenshots/randevu-sistemi.png)
+![Randevu Sistemi](https://github.com/user-attachments/assets/63ac48c0-6c52-49f4-a382-ec1daecb6aec)
 
 ## 🚀 Özellikler
 
@@ -117,10 +117,6 @@ RandevuSistemi/
 - **Çakışma Kontrolü**: Aynı saatte birden fazla randevu oluşturulabilir.
 
 - **Tarih/Saat**: Sistem, randevuların geçmiş tarih ve saatlere oluşturulmasını engeller.
-
-## 📝 Lisans
-
-Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 ## 🙏 Teşekkürler
 
