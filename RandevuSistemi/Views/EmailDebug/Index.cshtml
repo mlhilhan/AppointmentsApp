@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "E-posta Testi";
+}
+
+<div class="container">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Test E-postası Gönder</h5>
+            <p class="card-text">
+                Bu sayfa, e-posta bildirim sisteminin düzgün çalıştığını test etmek için kullanılabilir.
+                Gönderilen e-postalar sadece konsol çıktısında gösterilecektir.
+            </p>
+
+            <form asp-action="TestEmail" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-posta Adresi</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Test E-postası Gönder</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <h5>E-posta Bildirimleri Hakkında</h5>
+        <p>Sistemde şu e-posta bildirimleri yapılandırılmıştır:</p>
+        <ul>
+            <li><strong>Randevu Oluşturma:</strong> Kullanıcı yeni bir randevu oluşturduğunda bildirim gönderilir.</li>
+            <li><strong>Randevu Güncelleme:</strong> Mevcut bir randevu güncellendiğinde bildirim gönderilir.</li>
+            <li><strong>Randevu İptali:</strong> Bir randevu iptal edildiğinde bildirim gönderilir.</li>
+        </ul>
+    </div>
+
+    <a asp-controller="Admin" asp-action="Index" class="btn btn-secondary">Geri Dön</a>
+</div>

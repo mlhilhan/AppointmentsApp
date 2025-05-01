@@ -12,10 +12,14 @@ namespace RandevuSistemi.Service.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly IRepository<Appointment> _appointmentRepository;
+        private readonly IRepository<User> _userRepository;
+        private readonly IEmailService _emailService;
 
-        public AppointmentService(IRepository<Appointment> appointmentRepository)
+        public AppointmentService(IRepository<Appointment> appointmentRepository, IRepository<User> userRepository, IEmailService emailService)
         {
             _appointmentRepository = appointmentRepository;
+            _userRepository = userRepository;
+            _emailService = emailService;
         }
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id)
@@ -46,12 +50,38 @@ namespace RandevuSistemi.Service.Services
         public async Task<Appointment> CreateAppointmentAsync(Appointment appointment)
         {
             await _appointmentRepository.AddAsync(appointment);
+
+            // E-mail Mock
+            var user = await _userRepository.GetByIdAsync(appointment.UserId);
+            if (user != null)
+            {
+                await _emailService.SendAppointmentConfirmationAsync(
+                    user.Email,
+                    user.FullName,
+                    appointment.Title,
+                    appointment.AppointmentDate.ToString("dd/MM/yyyy"),
+                    appointment.AppointmentTime.ToString(@"hh\:mm")
+                );
+            }
             return appointment;
         }
 
         public async Task UpdateAppointmentAsync(Appointment appointment)
         {
             await _appointmentRepository.UpdateAsync(appointment);
+
+            // E-mail Mock
+            var user = await _userRepository.GetByIdAsync(appointment.UserId);
+            if (user != null)
+            {
+                await _emailService.SendAppointmentUpdateAsync(
+                    user.Email,
+                    user.FullName,
+                    appointment.Title,
+                    appointment.AppointmentDate.ToString("dd/MM/yyyy"),
+                    appointment.AppointmentTime.ToString(@"hh\:mm")
+                );
+            }
         }
 
         public async Task DeleteAppointmentAsync(int id)
@@ -61,6 +91,19 @@ namespace RandevuSistemi.Service.Services
             {
                 appointment.IsDeleted = true;
                 await _appointmentRepository.UpdateAsync(appointment);
+
+                // E-mail Mock
+                var user = await _userRepository.GetByIdAsync(appointment.UserId);
+                if (user != null)
+                {
+                    await _emailService.SendAppointmentCancellationAsync(
+                        user.Email,
+                        user.FullName,
+                        appointment.Title,
+                        appointment.AppointmentDate.ToString("dd/MM/yyyy"),
+                        appointment.AppointmentTime.ToString(@"hh\:mm")
+                    );
+                }
             }
         }
 
